@@ -463,7 +463,7 @@ export function calculatePayroll(
     checkNumber: periodInput.checkNumber,
     adviceNumber: periodInput.adviceNumber || periodInput.checkNumber,
     batchNumber: periodInput.batchNumber || '136266',
-    inquiryPhone: '(801) 555-0199',
+    inquiryPhone: '(385) 576-8810',
     earnings,
     grossPay: currentCheck.grossPay,
     totalHoursWorked: regularHours + overtimeHours,

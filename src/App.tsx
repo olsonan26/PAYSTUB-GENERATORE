@@ -36,6 +36,7 @@ export default function App() {
             zip: '84005',
             ein: '3095200',
             utahTaxId: '15056820-002-WTH',
+            inquiryPhone: parsed.inquiryPhone || parsed.phone || '(385) 576-8810',
           };
         }
       } catch (e) { console.error(e); }

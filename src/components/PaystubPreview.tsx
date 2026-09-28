@@ -140,7 +140,7 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
             <div className="mt-3 text-[11px] font-arial text-neutral-900 leading-[1.35]">
               <div className="whitespace-nowrap">
                 <span className="font-bold">For inquiries on this statement please call: </span>
-                <span className="font-bold">{company.inquiryPhone || company.phone || '(800)260-0852'}</span>
+                <span className="font-bold">{company.inquiryPhone || company.phone || '(385) 576-8810'}</span>
               </div>
               <div className="flex justify-between w-[250px] whitespace-nowrap">
                 <span className="font-bold">Total Hours Worked:</span>
