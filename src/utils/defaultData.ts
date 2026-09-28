@@ -11,7 +11,7 @@ export const DEFAULT_COMPANY: Company = {
   city: 'Saratoga Springs',
   state: 'UT',
   zip: '84005',
-  phone: '(801) 555-0199',
+  phone: '(385) 576-8810',
   inquiryPhone: '(385) 576-8810',
   email: 'ancienttouchtherapy@gmail.com',
   watermarkText: '',
