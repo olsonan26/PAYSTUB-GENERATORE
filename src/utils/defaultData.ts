@@ -12,8 +12,8 @@ export const DEFAULT_COMPANY: Company = {
   state: 'UT',
   zip: '84005',
   phone: '(801) 555-0199',
-  inquiryPhone: '(801) 555-0199',
-  email: 'payroll@ancienttouchtherapy.com',
+  inquiryPhone: '(385) 576-8810',
+  email: 'ancienttouchtherapy@gmail.com',
   watermarkText: '',
   sutaRate: 0.011, // 1.1% Utah SUI
 };

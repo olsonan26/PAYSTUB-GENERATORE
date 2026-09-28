@@ -90,8 +90,8 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
     return (
       <div
         id={containerId}
-        className="relative bg-white text-neutral-900 border border-neutral-300 shadow-sm p-10 max-w-[800px] mx-auto select-text print:border-none print:shadow-none print:p-0 print:m-0"
-        style={{ minHeight: '1100px', backgroundColor: '#ffffff', fontFamily: 'Arial, Helvetica, sans-serif' }}
+        className="relative bg-white text-neutral-900 border-none shadow-none px-8 py-8 w-[780px] mx-auto select-text print:border-none print:shadow-none print:p-0 print:m-0"
+        style={{ width: '780px', minHeight: '1100px', backgroundColor: '#ffffff', fontFamily: 'Arial, Helvetica, sans-serif' }}
       >
         {watermark && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-10">
@@ -104,71 +104,92 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
         {/* TOP ROW: Company Left, Title & Meta Right */}
         <div className="flex justify-between items-start">
           
-          {/* Company Details Left */}
-          <div className="text-left text-[11px] text-neutral-900 leading-[1.3] w-[45%]">
-            <div className="pl-14 text-neutral-900 font-arial font-normal">
+          {/* Company Details, Exemptions, and Inquiries Left */}
+          <div className="w-[380px] text-left">
+            {/* Company Name & Address (Indented like Alexander's) */}
+            <div className="ml-16 text-[11px] text-neutral-900 font-arial font-normal leading-[1.3]">
               <div>{company.name}</div>
               <div className="italic text-neutral-800">{company.address}</div>
               {company.addressLine2 && <div className="text-neutral-800">{company.addressLine2}</div>}
               <div>{company.city}, {company.state} {company.zip}</div>
             </div>
 
-            {/* Exemptions Block (Courier Monospace - matches Screenshot 1 & 2) */}
-            <div className="mt-4 font-courier text-[11px] leading-[1.35] text-neutral-900">
+            {/* Exemptions Block (Courier Monospace - matches Alexander) */}
+            <div className="mt-2.5 font-courier text-[11px] leading-[1.3] text-neutral-900">
               <div className="flex">
-                <span className="w-16"></span>
-                <span className="w-24 text-center font-bold">Exemptions</span>
+                <span className="w-12"></span>
+                <span className="w-20 text-center font-bold">Exemptions</span>
                 <span className="w-16 text-center font-bold">Addl</span>
-                <span className="w-20 text-center font-bold">Status</span>
+                <span className="w-16 text-center font-bold">Status</span>
               </div>
               <div className="flex">
-                <span className="w-16 font-bold">Fed:</span>
-                <span className="w-24 text-center font-normal">${employee.w4Step3DependentsAmount || 0}</span>
+                <span className="w-12 font-bold">Fed:</span>
+                <span className="w-20 text-center font-normal">${employee.w4Step3DependentsAmount || 0}</span>
                 <span className="w-16 text-center font-normal">${employee.additionalFederalWithholding ? employee.additionalFederalWithholding.toFixed(2) : '0.00'}</span>
-                <span className="w-20 text-center font-normal">Exempt</span>
+                <span className="w-16 text-center font-normal">Exempt</span>
               </div>
               <div className="flex">
-                <span className="w-16 font-bold">State:</span>
-                <span className="w-24 text-center font-normal">{employee.utahAllowances || 0}</span>
+                <span className="w-12 font-bold">State:</span>
+                <span className="w-20 text-center font-normal">{employee.utahAllowances || 0}</span>
                 <span className="w-16 text-center font-normal">${employee.additionalUtahWithholding ? employee.additionalUtahWithholding.toFixed(2) : '0.00'}</span>
-                <span className="w-20 text-center font-normal"></span>
+                <span className="w-16 text-center font-normal"></span>
+              </div>
+            </div>
+
+            {/* Inquiries & Basis of Pay (Directly under Exemptions on left column!) */}
+            <div className="mt-3 text-[11px] font-arial text-neutral-900 leading-[1.35]">
+              <div className="whitespace-nowrap">
+                <span className="font-bold">For inquiries on this statement please call: </span>
+                <span className="font-bold">{company.inquiryPhone || company.phone || '(800)260-0852'}</span>
+              </div>
+              <div className="flex justify-between w-[250px] whitespace-nowrap">
+                <span className="font-bold">Total Hours Worked:</span>
+                <span className="font-courier font-normal">
+                  {(payroll.totalHoursWorked || (payroll.regularHours + payroll.overtimeHours)).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between w-[250px] whitespace-nowrap">
+                <span className="font-bold">Basis of Pay:</span>
+                <span className="font-arial font-normal capitalize">{employee.payType === 'salary' ? 'Salary' : 'Hourly'}</span>
               </div>
             </div>
           </div>
 
-          {/* Statement Header & Meta Right */}
-          <div className="text-right w-[52%]">
-            <h1 className="text-[22px] font-bold tracking-tight text-neutral-900 font-arial">
+          {/* Statement Header, Metadata, and Employee Address Right */}
+          <div className="w-[330px] flex flex-col items-end">
+            <h1 className="text-[22px] font-bold tracking-tight text-neutral-900 font-arial text-right">
               Earnings Statement
             </h1>
-            <div className="text-[11px] font-courier text-neutral-900 mt-0.5">Page 001 of 001</div>
+            <div className="text-[11px] font-courier text-neutral-900 mt-0.5 text-right w-[270px]">
+              Page 001 of 001
+            </div>
 
             {/* Metadata Table (100% Courier) */}
-            <div className="mt-3 text-[11px] font-courier leading-[1.35] text-neutral-900 inline-block text-left">
-              <div className="flex justify-between gap-8">
+            <div className="mt-2 text-[11px] font-courier leading-[1.35] text-neutral-900 w-[270px]">
+              <div className="flex justify-between whitespace-nowrap">
                 <span className="font-normal">Period Beg/End</span>
                 <span className="font-normal text-right">{formatDateSlash(payroll.startDate)} - {formatDateSlash(payroll.endDate)}</span>
               </div>
-              <div className="flex justify-between gap-8">
+              <div className="flex justify-between whitespace-nowrap">
                 <span className="font-normal">Advice Date:</span>
                 <span className="font-normal text-right">{formatDateSlash(payroll.payDate)}</span>
               </div>
-              <div className="flex justify-between gap-8">
+              <div className="flex justify-between whitespace-nowrap">
                 <span className="font-normal">Advice Number:</span>
                 <span className="font-normal text-right">{payroll.adviceNumber || payroll.checkNumber}</span>
               </div>
-              <div className="flex justify-between gap-8">
+              <div className="flex justify-between whitespace-nowrap">
                 <span className="font-normal">Batch Number:</span>
                 <span className="font-normal text-right">{payroll.batchNumber || '136266'}</span>
               </div>
-              <div className="flex justify-between gap-8">
+              <div className="flex justify-between whitespace-nowrap">
                 <span className="font-normal">Employee No:</span>
                 <span className="font-normal text-right">{employee.employeeNumber}</span>
               </div>
             </div>
 
-            {/* Employee Address Block (Arial Bold - matches Screenshot 2) */}
-            <div className="mt-6 text-left text-[11px] font-arial font-bold text-neutral-900 leading-[1.3] pl-20">
+            {/* Employee Address Block (Arial Bold - strictly left-aligned with Metadata table) */}
+            <div className="mt-4 text-left text-[11px] font-arial font-bold text-neutral-900 leading-[1.3] w-[270px] whitespace-nowrap">
               <div>{employee.firstName === 'Nadia' ? 'Nadia Olson' : `${employee.firstName} ${employee.lastName}`}</div>
               <div>{employee.firstName === 'Nadia' ? '4605 E Rustic Ranch Way' : (employee.address || '4605 E Rustic Ranch Way')}</div>
               <div>{employee.firstName === 'Nadia' ? 'Eagle Mountain, UT  84005-6397' : `${employee.city || 'Eagle Mountain'}, ${employee.state || 'UT'}  ${employee.zip || '84005-6397'}`}</div>
@@ -177,146 +198,130 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
 
         </div>
 
-        {/* Inquiries & Basis of Pay (Arial Bold labels, matches Screenshot 2) */}
-        <div className="mt-6 mb-4 text-[11px] font-arial text-neutral-900 leading-[1.35]">
-          <div>
-            <span className="font-bold">For inquiries on this statement please call: </span>
-            <span className="font-bold">{company.inquiryPhone || company.phone || '(800)260-0852'}</span>
-          </div>
-          <div>
-            <span className="font-bold">Total Hours Worked:</span>
-            <span className="font-courier font-normal ml-16">
-              {(payroll.totalHoursWorked || (payroll.regularHours + payroll.overtimeHours)).toFixed(2)}
-            </span>
-          </div>
-          <div>
-            <span className="font-bold">Basis of Pay:</span>
-            <span className="font-arial font-normal ml-24 capitalize">{employee.payType === 'salary' ? 'Salary' : 'Hourly'}</span>
-          </div>
-        </div>
-
-        {/* TWO-COLUMN ACCOUNTING REPORT (100% Courier Monospace - matches Screenshot 2) */}
-        <div className="grid grid-cols-12 gap-8 my-4 text-[11px] font-courier leading-[1.35]">
+        {/* TWO-COLUMN ACCOUNTING REPORT (100% Courier Monospace - matches Screenshot 1 & 3) */}
+        <div className="flex justify-between gap-6 my-4 text-[11px] font-courier leading-[1.35]">
           
           {/* Left Column: Gross Pay, Deductions, Net Pay, Taxable Earnings */}
-          <div className="col-span-6 space-y-0.5">
+          <div className="w-[355px] space-y-0.5">
             <div className="flex justify-between font-bold text-neutral-900">
-              <span>Gross Pay</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right font-bold">Current</span>
-                <span className="w-24 text-right font-bold">YearToDate</span>
+              <span className="whitespace-nowrap font-bold">Gross Pay</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right font-bold">Current</span>
+                <span className="w-[85px] text-right font-bold">YearToDate</span>
               </div>
             </div>
 
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Wages</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{payroll.grossPay.toFixed(2)}</span>
-                <span className="w-24 text-right">{payroll.ytdGross.toFixed(2)}</span>
+              <span className="whitespace-nowrap">Wages</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.grossPay.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{payroll.ytdGross.toFixed(2)}</span>
               </div>
             </div>
 
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Misc Income/Adj</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{formatDotZero(payroll.bonusPay)}</span>
-                <span className="w-24 text-right">{formatDotZero(payroll.bonusPay)}</span>
+              <span className="whitespace-nowrap">Misc Income/Adj</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{formatDotZero(payroll.bonusPay)}</span>
+                <span className="w-[85px] text-right">{formatDotZero(payroll.bonusPay)}</span>
               </div>
             </div>
 
-            <div className="flex justify-between text-neutral-900">
-              <span className="font-bold">Total Gross Pay</span>
-              <div className="flex gap-6 font-normal">
-                <span className="w-20 text-right">{payroll.grossPay.toFixed(2)}</span>
-                <span className="w-24 text-right">{payroll.ytdGross.toFixed(2)}</span>
+            {/* Total Gross Pay (ON ONE LINE, NOT BOLD) */}
+            <div className="flex justify-between text-neutral-900 font-normal">
+              <span className="whitespace-nowrap">Total Gross Pay</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.grossPay.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{payroll.ytdGross.toFixed(2)}</span>
               </div>
             </div>
 
             {/* Deductions Sub-block */}
             <div className="pt-2 font-bold text-neutral-900">
-              <span>Deductions</span>
+              <span className="whitespace-nowrap font-bold">Deductions</span>
             </div>
 
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Pre-tax</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{formatDotZero(payroll.totalPreTaxDeductions)}</span>
-                <span className="w-24 text-right">{formatDotZero(payroll.ytdPreTaxDeductions)}</span>
-              </div>
-            </div>
-
-            <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Taxes</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{totalTaxes.toFixed(2)}</span>
-                <span className="w-24 text-right">{totalYtdTaxes.toFixed(2)}</span>
+              <span className="whitespace-nowrap">Pre-tax</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{formatDotZero(payroll.totalPreTaxDeductions)}</span>
+                <span className="w-[85px] text-right">{formatDotZero(payroll.ytdPreTaxDeductions)}</span>
               </div>
             </div>
 
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Additional Deductions</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{formatDotZero(payroll.totalPostTaxDeductions)}</span>
-                <span className="w-24 text-right">{formatDotZero(payroll.ytdPostTaxDeductions)}</span>
+              <span className="whitespace-nowrap">Taxes</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{totalTaxes.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{totalYtdTaxes.toFixed(2)}</span>
               </div>
             </div>
 
-            <div className="flex justify-between text-neutral-900">
-              <span className="font-bold">Total Deductions</span>
-              <div className="flex gap-6 font-normal">
-                <span className="w-20 text-right">{totalCurrentDeductions.toFixed(2)}</span>
-                <span className="w-24 text-right">{totalYtdDeductions.toFixed(2)}</span>
+            <div className="flex justify-between text-neutral-900 font-normal">
+              <span className="whitespace-nowrap">Additional Deductions</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{formatDotZero(payroll.totalPostTaxDeductions)}</span>
+                <span className="w-[85px] text-right">{formatDotZero(payroll.ytdPostTaxDeductions)}</span>
               </div>
             </div>
 
-            {/* NET PAY HIGHLIGHT ROW (Solid gray bar, bold Courier, NO borders - matches Screenshot 2) */}
-            <div className="my-1 py-1 px-1.5 bg-[#b8b8b8] text-neutral-900 flex justify-between font-bold">
-              <span>NET PAY</span>
-              <div className="flex gap-6 font-bold">
-                <span className="w-20 text-right">${payroll.netPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                <span className="w-24 text-right">${payroll.ytdNetPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            {/* Total Deductions (ON ONE LINE, NOT BOLD) */}
+            <div className="flex justify-between text-neutral-900 font-normal">
+              <span className="whitespace-nowrap">Total Deductions</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{totalCurrentDeductions.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{totalYtdDeductions.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* NET PAY HIGHLIGHT ROW with black bottom border */}
+            <div className="my-1 py-1 px-1 bg-[#b8b8b8] text-neutral-900 flex justify-between font-bold border-b border-black">
+              <span className="whitespace-nowrap">NET PAY</span>
+              <div className="flex gap-4 font-bold">
+                <span className="w-[75px] text-right">${payroll.netPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="w-[85px] text-right">${payroll.ytdNetPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
 
             {/* Federal & FICA Earnings */}
             <div className="pt-0.5 flex justify-between text-neutral-900 font-normal">
-              <span>Federal Earnings</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{payroll.fedTaxableGross.toFixed(2)}</span>
-                <span className="w-24 text-right">{payroll.ytdFedTaxable.toFixed(2)}</span>
+              <span className="whitespace-nowrap">Federal Earnings</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.fedTaxableGross.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{payroll.ytdFedTaxable.toFixed(2)}</span>
               </div>
             </div>
 
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>FICA Earnings</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{payroll.ficaTaxableGross.toFixed(2)}</span>
-                <span className="w-24 text-right">{(payroll.ytdFedTaxable).toFixed(2)}</span>
+              <span className="whitespace-nowrap">FICA Earnings</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.ficaTaxableGross.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{(payroll.ytdFedTaxable).toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Pre-tax items, Taxes detail, Additional deductions, Benefits */}
-          <div className="col-span-6 space-y-0.5">
+          <div className="w-[355px] space-y-0.5">
             <div className="flex justify-between font-bold text-neutral-900">
-              <span>Misc Income/Adj</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right font-bold">Current</span>
-                <span className="w-24 text-right font-bold">YearToDate</span>
+              <span className="whitespace-nowrap font-bold">Misc Income/Adj</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right font-bold">Current</span>
+                <span className="w-[85px] text-right font-bold">YearToDate</span>
               </div>
             </div>
 
             {/* Pre-tax deductions header */}
             <div className="pt-3 font-bold text-neutral-900">
-              <span>Pre-Tax Deductions</span>
+              <span className="whitespace-nowrap font-bold">Pre-Tax Deductions</span>
             </div>
             {payroll.preTaxDeductions.length > 0 ? (
               payroll.preTaxDeductions.map((d, i) => (
                 <div key={i} className="flex justify-between text-neutral-900 font-normal">
-                  <span className="truncate max-w-[150px]">{d.name}</span>
-                  <div className="flex gap-6">
-                    <span className="w-20 text-right">{d.amount.toFixed(2)}</span>
-                    <span className="w-24 text-right">{d.ytdAmount.toFixed(2)}</span>
+                  <span className="whitespace-nowrap">{d.name}</span>
+                  <div className="flex gap-4">
+                    <span className="w-[75px] text-right">{d.amount.toFixed(2)}</span>
+                    <span className="w-[85px] text-right">{d.ytdAmount.toFixed(2)}</span>
                   </div>
                 </div>
               ))
@@ -324,60 +329,38 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
 
             {/* Taxes Header */}
             <div className="pt-3 font-bold text-neutral-900">
-              <span>Taxes</span>
+              <span className="whitespace-nowrap font-bold">Taxes</span>
             </div>
-
-            {/* Federal Withholding (if non-zero) */}
-            {payroll.federalIncomeTax > 0 && (
-              <div className="flex justify-between text-neutral-900 font-normal">
-                <span>Federal Withholding</span>
-                <div className="flex gap-6">
-                  <span className="w-20 text-right">{payroll.federalIncomeTax.toFixed(2)}</span>
-                  <span className="w-24 text-right">{payroll.ytdFederalIncomeTax.toFixed(2)}</span>
-                </div>
-              </div>
-            )}
 
             {/* FICA Social Security */}
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>FICA</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{payroll.socialSecurityTax.toFixed(2)}</span>
-                <span className="w-24 text-right">{payroll.ytdSocialSecurityTax.toFixed(2)}</span>
+              <span className="whitespace-nowrap">FICA</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.socialSecurityTax.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{payroll.ytdSocialSecurityTax.toFixed(2)}</span>
               </div>
             </div>
 
             {/* Medicare */}
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Medicare</span>
-              <div className="flex gap-6">
-                <span className="w-20 text-right">{payroll.medicareTax.toFixed(2)}</span>
-                <span className="w-24 text-right">{payroll.ytdMedicareTax.toFixed(2)}</span>
+              <span className="whitespace-nowrap">Medicare</span>
+              <div className="flex gap-4">
+                <span className="w-[75px] text-right">{payroll.medicareTax.toFixed(2)}</span>
+                <span className="w-[85px] text-right">{payroll.ytdMedicareTax.toFixed(2)}</span>
               </div>
             </div>
 
-            {/* Utah State Income Tax */}
-            {payroll.utahStateTax > 0 && (
-              <div className="flex justify-between text-neutral-900 font-normal">
-                <span>State - UT</span>
-                <div className="flex gap-6">
-                  <span className="w-20 text-right">{payroll.utahStateTax.toFixed(2)}</span>
-                  <span className="w-24 text-right">{payroll.ytdUtahStateTax.toFixed(2)}</span>
-                </div>
-              </div>
-            )}
-
             {/* Additional Deductions Header */}
             <div className="pt-3 font-bold text-neutral-900">
-              <span>Additional Deductions</span>
+              <span className="whitespace-nowrap font-bold">Additional Deductions</span>
             </div>
             {payroll.postTaxDeductions.length > 0 ? (
               payroll.postTaxDeductions.map((d, i) => (
                 <div key={i} className="flex justify-between text-neutral-900 font-normal">
-                  <span className="truncate max-w-[150px]">{d.name}</span>
-                  <div className="flex gap-6">
-                    <span className="w-20 text-right">{d.amount.toFixed(2)}</span>
-                    <span className="w-24 text-right">{d.ytdAmount.toFixed(2)}</span>
+                  <span className="whitespace-nowrap">{d.name}</span>
+                  <div className="flex gap-4">
+                    <span className="w-[75px] text-right">{d.amount.toFixed(2)}</span>
+                    <span className="w-[85px] text-right">{d.ytdAmount.toFixed(2)}</span>
                   </div>
                 </div>
               ))
@@ -385,71 +368,71 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
 
             {/* Benefits Header (Vacation / Sick / PTO) */}
             <div className="pt-3 flex justify-between font-bold text-neutral-900">
-              <span>Benefits</span>
-              <span className="w-24 text-right font-bold">Balance</span>
+              <span className="whitespace-nowrap font-bold">Benefits</span>
+              <span className="w-[85px] text-right font-bold">Balance</span>
             </div>
             <div className="flex justify-between text-neutral-900 font-normal">
-              <span>Vacation</span>
-              <span className="w-24 text-right">{formatDotZero(employee.ptoHoursRemaining)}</span>
+              <span className="whitespace-nowrap">Vacation</span>
+              <span className="w-[85px] text-right">{formatDotZero(employee.ptoHoursRemaining)}</span>
             </div>
           </div>
 
         </div>
 
-        {/* WAGES DETAIL TABLE (100% Courier Monospace - matches Screenshot 2) */}
-        <div className="my-5 font-courier text-[11px] leading-[1.35]">
-          <div className="flex justify-between font-bold text-neutral-900 pb-0.5">
-            <span className="w-20 font-bold">Wages</span>
-            <span className="w-20"></span>
-            <span className="w-16 text-right font-bold">Reg</span>
-            <span className="w-16 text-right font-bold">Prem</span>
-            <span className="w-16 text-right font-bold">Reg</span>
-            <span className="w-16 text-right font-bold">OT</span>
-            <span className="w-16 text-right font-bold">DT</span>
+        {/* WAGES DETAIL TABLE (100% Courier Monospace - matches Screenshot 1 & 7) */}
+        <div className="my-5 font-courier text-[11px] leading-[1.35] w-[450px]">
+          <div className="flex justify-between font-bold text-neutral-900 pb-0.5 whitespace-nowrap">
+            <span className="w-[75px] font-bold">Wages</span>
+            <span className="w-[65px]"></span>
+            <span className="w-[60px] text-right font-bold">Reg</span>
+            <span className="w-[65px] text-right font-bold">Prem</span>
+            <span className="w-[55px] text-right font-bold">Reg</span>
+            <span className="w-[45px] text-right font-bold">OT</span>
+            <span className="w-[45px] text-right font-bold">DT</span>
           </div>
 
-          <div className="flex justify-between font-bold text-neutral-900 pb-1">
-            <span className="w-20">WkEnding</span>
-            <span className="w-20">Type</span>
-            <span className="w-16 text-right">Rate</span>
-            <span className="w-16 text-right">Rate</span>
-            <span className="w-16 text-right">Hours</span>
-            <span className="w-16 text-right">Hours</span>
-            <span className="w-16 text-right">Hours</span>
+          <div className="flex justify-between font-bold text-neutral-900 pb-1 whitespace-nowrap">
+            <span className="w-[75px]">WkEnding</span>
+            <span className="w-[65px]">Type</span>
+            <span className="w-[60px] text-right">Rate</span>
+            <span className="w-[65px] text-right">Rate</span>
+            <span className="w-[55px] text-right">Hours</span>
+            <span className="w-[45px] text-right">Hours</span>
+            <span className="w-[45px] text-right">Hours</span>
           </div>
 
-          <div className="flex justify-between text-neutral-900 font-normal py-0.5">
-            <span className="w-20">{formatDateShort(payroll.endDate)}</span>
-            <span className="w-20 font-normal">Regular</span>
-            <span className="w-16 text-right">{(payroll.regularRate || (payroll.grossPay / (payroll.regularHours || 40))).toFixed(3)}</span>
-            <span className="w-16 text-right">{((payroll.regularRate || (payroll.grossPay / (payroll.regularHours || 40))) * 1.5).toFixed(3)}</span>
-            <span className="w-16 text-right">{payroll.regularHours.toFixed(2)}</span>
-            <span className="w-16 text-right">{payroll.overtimeHours ? payroll.overtimeHours.toFixed(2) : '.00'}</span>
-            <span className="w-16 text-right">{payroll.doubleTimeHours ? payroll.doubleTimeHours.toFixed(2) : ''}</span>
+          <div className="flex justify-between text-neutral-900 font-normal py-0.5 whitespace-nowrap">
+            <span className="w-[75px]">{formatDateShort(payroll.endDate)}</span>
+            <span className="w-[65px]">Regular</span>
+            <span className="w-[60px] text-right">{(payroll.regularRate || (payroll.grossPay / (payroll.regularHours || 40))).toFixed(3)}</span>
+            <span className="w-[65px] text-right">{((payroll.regularRate || (payroll.grossPay / (payroll.regularHours || 40))) * 1.5).toFixed(3)}</span>
+            <span className="w-[55px] text-right">{payroll.regularHours.toFixed(2)}</span>
+            <span className="w-[45px] text-right">{payroll.overtimeHours ? payroll.overtimeHours.toFixed(2) : '.00'}</span>
+            <span className="w-[45px] text-right">{payroll.doubleTimeHours ? payroll.doubleTimeHours.toFixed(2) : ''}</span>
           </div>
 
-          <div className="flex justify-between text-neutral-900 pt-2 font-normal">
-            <span className="w-20"></span>
-            <span className="w-20 text-right pr-4">Total</span>
-            <span className="w-16 text-right"></span>
-            <span className="w-16 text-right"></span>
-            <span className="w-16 text-right">{payroll.regularHours.toFixed(2)}</span>
-            <span className="w-16 text-right">{payroll.overtimeHours ? payroll.overtimeHours.toFixed(2) : '.00'}</span>
-            <span className="w-16 text-right">{formatDotZero(payroll.doubleTimeHours || 0)}</span>
+          <div className="flex justify-between text-neutral-900 pt-2 font-normal whitespace-nowrap">
+            <span className="w-[75px]"></span>
+            <span className="w-[65px] text-right pr-2">Total</span>
+            <span className="w-[60px]"></span>
+            <span className="w-[65px]"></span>
+            <span className="w-[55px] text-right">{payroll.regularHours.toFixed(2)}</span>
+            <span className="w-[45px] text-right">{payroll.overtimeHours ? payroll.overtimeHours.toFixed(2) : '.00'}</span>
+            <span className="w-[45px] text-right">{formatDotZero(payroll.doubleTimeHours || 0)}</span>
           </div>
         </div>
 
-        {/* BOTTOM SECTION: Company & Direct Deposit Stub (Arial Bold headers & names, matches Screenshot 2) */}
+        {/* BOTTOM SECTION: Company & Direct Deposit Stub (Arial Bold headers & names, matches Screenshot 5) */}
         <div className="mt-20 pt-4">
           
           {/* Advice Number & Date Right (Arial Bold) */}
           <div className="flex justify-end text-[11px] mb-3 font-arial font-bold">
             <div className="space-y-1.5 text-left w-64">
-              <div className="flex justify-between">
+              <div className="flex justify-between whitespace-nowrap">
                 <span>Advice Number:</span>
                 <span>{payroll.adviceNumber || payroll.checkNumber}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between whitespace-nowrap">
                 <span>Advice Date:</span>
                 <span>{formatDateSlash(payroll.payDate)}</span>
               </div>
@@ -467,23 +450,23 @@ export const PaystubPreview: React.FC<PaystubPreviewProps> = ({
           {/* Direct Deposit Distribution Table (Arial Bold Headers & Name, Courier Numbers) */}
           <div className="text-[11px] mb-8">
             <div className="flex justify-between font-arial font-bold text-neutral-900 border-b border-black pb-0.5">
-              <span className="w-1/2">Deposited to the account of</span>
-              <span className="w-1/4 text-center">Account Number</span>
-              <span className="w-1/4 text-right">Amount</span>
+              <span className="w-1/2 whitespace-nowrap">Deposited to the account of</span>
+              <span className="w-1/4 text-center whitespace-nowrap">Account Number</span>
+              <span className="w-1/4 text-right whitespace-nowrap">Amount</span>
             </div>
             <div className="flex justify-between text-neutral-900 py-1">
-              <span className="w-1/2 font-arial font-bold">{employee.firstName === 'Nadia' ? 'Nadia Olson' : `${employee.firstName} ${employee.lastName}`}</span>
-              <span className="w-1/4 text-center font-courier font-normal">{employee.directDeposit.accountNumberMasked || 'XXXXXXXX9652'}</span>
-              <span className="w-1/4 text-right font-courier font-normal">
+              <span className="w-1/2 font-arial font-bold whitespace-nowrap">{employee.firstName === 'Nadia' ? 'Nadia Olson' : `${employee.firstName} ${employee.lastName}`}</span>
+              <span className="w-1/4 text-center font-courier font-normal whitespace-nowrap">{employee.directDeposit.accountNumberMasked || 'XXXXXXXX9652'}</span>
+              <span className="w-1/4 text-right font-courier font-normal whitespace-nowrap">
                 {payroll.netPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           </div>
 
-          {/* NON-NEGOTIABLE Big Stamped Text (Courier Bold Tracking) */}
+          {/* NON-NEGOTIABLE Big Stamped Text (Courier Bold, Normal Tracking - matches Screenshot 5) */}
           <div className="text-right pt-6">
             <span
-              className="text-[22px] font-bold tracking-[0.2em] text-neutral-900 uppercase font-courier"
+              className="text-[20px] font-bold text-neutral-900 uppercase font-courier tracking-normal"
             >
               NON-NEGOTIABLE
             </span>

@@ -308,25 +308,28 @@ export function calculateSingleCheck(
   // Medicare (1.45%)
   const medicareTax = Math.round(ficaTaxableGross * MEDICARE_RATE * 100) / 100;
 
-  // Federal Income Tax (Pub 15-T Weekly Married)
-  const federalIncomeTax = calculateFederalIncomeTax2026(
-    fedTaxableGross,
-    employee.federalFilingStatus,
-    employee.w4Step2Check,
-    employee.w4Step3DependentsAmount,
-    employee.w4Step4aOtherIncome,
-    employee.w4Step4bDeductions,
-    employee.additionalFederalWithholding
-  );
+  // Federal Income Tax (Pub 15-T Weekly Married - 0 if exempt)
+  const isExempt = employee.taxStatus === 'Exempt';
+  const federalIncomeTax = isExempt
+    ? 0
+    : calculateFederalIncomeTax2026(
+        fedTaxableGross,
+        employee.federalFilingStatus,
+        employee.w4Step2Check,
+        employee.w4Step3DependentsAmount,
+        employee.w4Step4aOtherIncome,
+        employee.w4Step4bDeductions,
+        employee.additionalFederalWithholding
+      );
 
-  // Utah Withholding (Pub 14 Schedule 1 Weekly)
+  // Utah Withholding (Pub 14 Schedule 1 Weekly - 0 if exempt)
   const utahResult = calculateUtahStateTax2026(
     utahTaxableGross,
     employee.federalFilingStatus,
     employee.utahTaxMethod,
     employee.additionalUtahWithholding
   );
-  const utahStateTax = utahResult.withholding;
+  const utahStateTax = isExempt ? 0 : utahResult.withholding;
 
   // Total Taxes & Total Deductions
   const totalEmployeeTaxes = Math.round((socialSecurityTax + medicareTax + federalIncomeTax + utahStateTax) * 100) / 100;

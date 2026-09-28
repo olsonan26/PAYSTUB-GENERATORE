@@ -12,47 +12,61 @@ export async function generatePdfBlob(elementId: string): Promise<Blob | null> {
     throw new Error(`Element with id ${elementId} not found.`);
   }
 
-  // Render high-resolution PNG with skipFonts: true to prevent CORS stylesheet security errors
-  const imgData = await toPng(element, {
-    quality: 1.0,
-    pixelRatio: 2.0,
-    backgroundColor: '#ffffff',
-    skipFonts: true,
-    fontEmbedCSS: '',
-    cacheBust: true,
-  });
+  // Ensure no outer border or shadow is captured on the PDF export
+  const origBorder = element.style.border;
+  const origShadow = element.style.boxShadow;
+  const origOutline = element.style.outline;
+  element.style.border = 'none';
+  element.style.boxShadow = 'none';
+  element.style.outline = 'none';
 
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'letter',
-  });
+  try {
+    // Render high-resolution PNG with skipFonts: true to prevent CORS stylesheet security errors
+    const imgData = await toPng(element, {
+      quality: 1.0,
+      pixelRatio: 2.0,
+      backgroundColor: '#ffffff',
+      skipFonts: true,
+      fontEmbedCSS: '',
+      cacheBust: true,
+    });
 
-  const pageWidth = 215.9; // 8.5 inches in mm
-  const pageHeight = 279.4; // 11 inches in mm
-  const margin = 8;
-  const contentWidth = pageWidth - (margin * 2);
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter',
+    });
 
-  // Measure natural dimensions
-  const img = new Image();
-  await new Promise((resolve, reject) => {
-    img.onload = resolve;
-    img.onerror = reject;
-    img.src = imgData;
-  });
+    const pageWidth = 215.9; // 8.5 inches in mm
+    const pageHeight = 279.4; // 11 inches in mm
+    const margin = 8;
+    const contentWidth = pageWidth - (margin * 2);
 
-  const contentHeight = (img.height * contentWidth) / img.width;
+    // Measure natural dimensions
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = imgData;
+    });
 
-  pdf.addImage(
-    imgData,
-    'PNG',
-    margin,
-    margin,
-    contentWidth,
-    Math.min(contentHeight, pageHeight - (margin * 2))
-  );
+    const contentHeight = (img.height * contentWidth) / img.width;
 
-  return pdf.output('blob');
+    pdf.addImage(
+      imgData,
+      'PNG',
+      margin,
+      margin,
+      contentWidth,
+      Math.min(contentHeight, pageHeight - (margin * 2))
+    );
+
+    return pdf.output('blob');
+  } finally {
+    element.style.border = origBorder;
+    element.style.boxShadow = origShadow;
+    element.style.outline = origOutline;
+  }
 }
 
 export async function exportPaystubToPdf(options: PdfExportOptions): Promise<boolean> {
@@ -62,6 +76,14 @@ export async function exportPaystubToPdf(options: PdfExportOptions): Promise<boo
   if (!element) {
     throw new Error(`Element with id ${elementId} not found.`);
   }
+
+  // Ensure no outer border or shadow is captured on the PDF export
+  const origBorder = element.style.border;
+  const origShadow = element.style.boxShadow;
+  const origOutline = element.style.outline;
+  element.style.border = 'none';
+  element.style.boxShadow = 'none';
+  element.style.outline = 'none';
 
   try {
     // 1. Capture element with skipFonts to avoid CORS issues with Google Fonts
@@ -122,5 +144,9 @@ export async function exportPaystubToPdf(options: PdfExportOptions): Promise<boo
     console.error('Failed to export PDF, falling back to window.print():', error);
     window.print();
     return false;
+  } finally {
+    element.style.border = origBorder;
+    element.style.boxShadow = origShadow;
+    element.style.outline = origOutline;
   }
 }
