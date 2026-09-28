@@ -1,0 +1,6 @@
+{
+  "name": "Paystubs.app - Utah Payroll & Paystub Generator",
+  "description": "Professional paystub generator with automated Utah state income tax and federal withholding calculations, instant PDF export, and direct email delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
